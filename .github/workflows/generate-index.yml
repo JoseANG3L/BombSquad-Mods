@@ -1,0 +1,30 @@
+name: Generar index.html automáticamente
+
+on:
+  push:
+    branches:
+      - main  # Cambia aquí si tu rama principal tiene otro nombre
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clonar repo
+      uses: actions/checkout@v4
+
+    - name: Configurar Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Ejecutar script de generación de index
+      run: python generar_index.py
+
+    - name: Hacer commit y push de index.html actualizado
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add index.html
+        git diff --cached --quiet || git commit -m "Actualizar index.html automáticamente"
+        git push
